@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar  6 14:45:22 2019
+@author: Lani L. Mateo
+Purpose: Predict the factors affecting low birth weight.
+Note: Two (2) raw data set explored
+"""
+# Step 1: Import modules
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels.formula.api as smf
+from sklearn.model_selection import train_test_split # train/test split
+from sklearn.neighbors import KNeighborsRegressor
+import sklearn.metrics
+from sklearn.model_selection import cross_val_score
+
+# Step 2: Import data set
+file = 'birthweight.xlsx'
+bw = pd.read_excel(file)
+
+# Step 3: Flag missing values: 
+print(bw.isnull().sum())
+print(bw.isnull().sum().sum())
+print((((bw[:].isnull().sum())/bw[:].count()).round(2)))
+print(((((bw[:].isnull().sum())/bw[:].count()))).sum().round(2))
+bw[:].count().sum()
+for col in bw:
+    if bw[col].isnull().astype(int).sum() > 0:
+        bw['m_'+col] = bw[col].isnull().astype(int)
+        
+bw= pd.DataFrame.copy(bw)
+
+# Step 4: Get general info about the full data set
+print(bw.columns)
+print(bw.shape)
+print(bw.info())
+
+# Step 5: Check if there is any significant correlation
+corr = bw.iloc[:, :-9].corr()
+print(corr)
+
+plt.figure(figsize=(15,15))
+sns.set(font_scale=1.05)
+sns.heatmap(corr,
+            square = True,
+            annot = True,
+            linecolor = 'white',
+            linewidths = 0.05)
+
+##############################################################################
+#DATA SET INSIGHT
+#There are 18 variables and 1832 observations.
+#Nine (9) variables have null values.
+#There are 387 total null values.
+#More than 20% of the observations have missing values.
+#There is no correlation between birth weight and any of the variables
+#No point doing any further analysis on this data set
+##############################################################################
+
+# Step 1: Clear variable explorer and console
+# Step 2: Run packages
+# Step 3: Import new data set
+file = 'birthweight_feature_set.xlsx'
+bw1 = pd.read_excel(file)
+
+# Step 4: Identify and flag missing values
+print(bw1.isnull().sum())
+print(bw1.isnull().sum().sum())
+print((((bw1[:].isnull().sum())/bw1[:].count()).round(2)))
+print(((((bw1[:].isnull().sum())/bw1[:].count()))).sum().round(2))
+bw1[:].count().sum()
+
+for col in bw1:
+    if bw1[col].isnull().astype(int).sum() > 0:
+        bw1['m_'+col] = bw1[col].isnull().astype(int)      
+bw1= pd.DataFrame.copy(bw1)
+
+a = bw1.isnull().sum().sum()
+b = bw1.iloc[:,-3:].sum().sum()
+
+if a == b:
+    print('All missing values accounted for.')
+else:
+    print('Some missing values may be unaccounted for, please audit.')
+
+# Step 5: Get general info about the full data set
+print(bw1.columns)
+print(bw1.shape)
+print(bw1.info())
+
+"""
+DATA SET INSIGHT
+There are 18 variables and 196 observations.
+Three (3) variables have null values - meduc, npvis and feduc
+There are 13 total null values.
+7% of the observations having missing values.
+"""
+
+# Step 6: Create independent dataframes to test imputation methods
+bw_0 = pd.DataFrame.copy(bw1)
+bw_mean = pd.DataFrame.copy(bw_0)
+bw_median = pd.DataFrame.copy(bw_mean)
+
+# Step 6a: Impute missing data with zero (0)
+bw_0= pd.DataFrame.copy(bw1)
+bw_0= bw_0.fillna(0)
+
+for col in bw_0.iloc[:, :-3]:
+    sns.distplot(bw_0[col])
+    plt.tight_layout()
+    plt.show()
+    
+# Step 6b: Impute missing data with mean
+for col in bw_mean:
+        if bw_mean[col].isnull().astype(int).sum() > 0:
+            col_mean = bw_mean[col].mean()
+            bw_mean[col] = bw_mean[col].fillna(col_mean).round(2)
+
+for col in bw_mean.iloc[:, :-3]:
+    sns.distplot(bw_0[col])
+    plt.tight_layout()
+    plt.show()
+
+# Step 6c: Impute missing data with median
+for col in bw_median:
+        if bw_median[col].isnull().astype(int).sum() > 0:
+            col_median = bw_median[col].median()
+            bw_median[col] = bw_median[col].fillna(col_median).round(2)
+            
+for col in bw_median.iloc[:, :-3]:
+    sns.distplot(bw_0[col])
+    plt.tight_layout()
+    plt.show()
+
+
+# Step 7: Explore data
+# Step 7a: Correlation
+corr1 = bw_median.iloc[:, :-3].corr()
+print(corr1)
+
+plt.figure(figsize=(15,12))
+sns.set(font_scale=1.15)
+sns.heatmap(corr1,
+            square = True,
+            annot = True,
+            linecolor = 'white',
+            linewidths = 0.02,
+            cbar = True)
+
+# Step 7b: Summary statistics
+bw1_summary = bw_median.iloc[:,:-3].describe()
+print(bw1_summary)
+
+"""
+CORRELATION INTERPRETATION
+There is a low negative correlation between parents' age and child's birthweight.
+This means that the older the parents are, the likelihood that their child's
+birthweight will be lower than average increases.
+
+Meanwhile there is a moderate negative correlation for both cigarette and
+alcohol consumption with child's birthweight. This means that the higher a
+mother's consumption of cigarette and alcohol are, the higher the likelihood
+that a child's birthweight will be lower than average.
+"""
