@@ -318,62 +318,36 @@ plt.show()
 ##############################################################################
 #Regression Analysis
 ##############################################################################
-# Mother's Age
-bw_median_mage = smf.ols(formula = """bwght ~ bw_median['mage']""",
-                        data = bw_median)
-results_mage = bw_median_mage.fit()
-print(results_mage.summary())
+# Full Model
+bw_median_bwght = smf.ols(formula = """bwght ~ bw_median['mage'] +
+                                              bw_median['meduc'] +
+                                              bw_median['monpre'] +
+                                              bw_median['npvis'] +
+                                              bw_median['fage'] +
+                                              bw_median['feduc'] +
+                                              bw_median['omaps'] +
+                                              bw_median['fmaps'] +
+                                              bw_median['cigs'] +
+                                              bw_median['drink'] +
+                                              bw_median['male'] +
+                                              bw_median['mwhte'] +
+                                              bw_median['mblck'] +
+                                              bw_median['moth'] +
+                                              bw_median['fwhte'] +
+                                              bw_median['fblck'] +
+                                              bw_median['foth'] +
+                                              bw_median['bwght'] +
+                                              bw_median['m_meduc'] +
+                                              bw_median['m_npvis'] +
+                                              bw_median['m_feduc']
+                                              """,
+                                              data = bw_median)
+results_bwght = bw_median_bwght.fit()
+print(results_bwght.summary())
 
 print(f"""
-Parameters:
-{results_mage.params.round(2)}
-
 Summary Statistics:
-R-Squared:          {results_mage.rsquared.round(3)}
-Adjusted R-Squared: {results_mage.rsquared_adj.round(3)}
+R-Squared:          {results_bwght.rsquared.round(3)}
+Adjusted R-Squared: {results_bwght.rsquared_adj.round(3)}
 """)
     
-# Father's Age
-bw_median_fage = smf.ols(formula = """bwght ~ bw_median['fage']""",
-                        data = bw_median)
-results_fage = bw_median_fage.fit()
-print(results_mage.summary())
-
-print(f"""
-Parameters:
-{results_fage.params.round(2)}
-
-Summary Statistics:
-R-Squared:          {results_fage.rsquared.round(3)}
-Adjusted R-Squared: {results_fage.rsquared_adj.round(3)}
-""") 
-    
-# Average cigarette consumption
-bw_median_cigs = smf.ols(formula = """bwght ~ bw_median['cigs']""",
-                        data = bw_median)
-results_cigs = bw_median_cigs.fit()
-print(results_cigs.summary())
-
-print(f"""
-Parameters:
-{results_cigs.params.round(2)}
-
-Summary Statistics:
-R-Squared:          {results_cigs.rsquared.round(3)}
-Adjusted R-Squared: {results_cigs.rsquared_adj.round(3)}
-""")
-    
-# Average alcohol consumption
-bw_median_drink = smf.ols(formula = """bwght ~ bw_median['drink']""",
-                        data = bw_median)
-results_drink = bw_median_drink.fit()
-print(results_drink.summary())
-
-print(f"""
-Parameters:
-{results_drink.params.round(2)}
-
-Summary Statistics:
-R-Squared:          {results_drink.rsquared.round(3)}
-Adjusted R-Squared: {results_drink.rsquared_adj.round(3)}
-""")       
