@@ -19,22 +19,23 @@ from sklearn.model_selection import cross_val_score
 file = 'birthweight.xlsx'
 bw = pd.read_excel(file)
 
-# Step 3: Flag missing values: 
+# Step 3: Get general info about the full data set
+print(bw.columns)
+print(bw.head())
+print(bw.shape)
+print(bw.info())
+print(bw.describe().round(2))
+
+# Step 4: Flag missing values: 
 print(bw.isnull().sum())
 print(bw.isnull().sum().sum())
-print((((bw[:].isnull().sum())/bw[:].count()).round(2)))
 print(((((bw[:].isnull().sum())/bw[:].count()))).sum().round(2))
-bw[:].count().sum()
+
 for col in bw:
     if bw[col].isnull().astype(int).sum() > 0:
         bw['m_'+col] = bw[col].isnull().astype(int)
         
 bw= pd.DataFrame.copy(bw)
-
-# Step 4: Get general info about the full data set
-print(bw.columns)
-print(bw.shape)
-print(bw.info())
 
 # Step 5: Check if there is any significant correlation
 corr = bw.iloc[:, :-9].corr()
@@ -48,15 +49,15 @@ sns.heatmap(corr,
             linecolor = 'white',
             linewidths = 0.05)
 
-##############################################################################
-#DATA SET INSIGHT
-#There are 18 variables and 1832 observations.
-#Nine (9) variables have null values.
-#There are 387 total null values.
-#More than 20% of the observations have missing values.
-#There is no correlation between birth weight and any of the variables
-#No point doing any further analysis on this data set
-##############################################################################
+"""
+DATA SET INSIGHT
+There are 18 variables and 1832 observations.
+Nine (9) variables have null values.
+There are 387 total null values.
+More than 20% of the observations have missing values.
+There is no correlation between birth weight and any of the variables
+No point doing any further analysis on this data set
+"""
 
 # Step 1: Clear variable explorer and console
 # Step 2: Run packages
@@ -64,12 +65,17 @@ sns.heatmap(corr,
 file = 'birthweight_feature_set.xlsx'
 bw1 = pd.read_excel(file)
 
-# Step 4: Identify and flag missing values
+# Step 4: Get general info about the full data set
+print(bw1.columns)
+print(bw1.shape)
+print(bw1.info())
+bw1_summary = bw1.iloc[:,:-3].describe().round(2)
+print(bw1_summary)
+
+# Step 5: Identify and flag missing values
 print(bw1.isnull().sum())
 print(bw1.isnull().sum().sum())
-print((((bw1[:].isnull().sum())/bw1[:].count()).round(2)))
 print(((((bw1[:].isnull().sum())/bw1[:].count()))).sum().round(2))
-bw1[:].count().sum()
 
 for col in bw1:
     if bw1[col].isnull().astype(int).sum() > 0:
@@ -84,11 +90,6 @@ if a == b:
 else:
     print('Some missing values may be unaccounted for, please audit.')
 
-# Step 5: Get general info about the full data set
-print(bw1.columns)
-print(bw1.shape)
-print(bw1.info())
-
 """
 DATA SET INSIGHT
 There are 18 variables and 196 observations.
@@ -99,8 +100,7 @@ There are 13 total null values.
 
 # Step 6: Create independent dataframes to test imputation methods
 bw_0 = pd.DataFrame.copy(bw1)
-bw_mean = pd.DataFrame.copy(bw_0)
-bw_median = pd.DataFrame.copy(bw_mean)
+bw_median = pd.DataFrame.copy(bw_0)
 
 # Step 6a: Impute missing data with zero (0)
 bw_0= pd.DataFrame.copy(bw1)
@@ -110,19 +110,8 @@ for col in bw_0.iloc[:, :-3]:
     sns.distplot(bw_0[col])
     plt.tight_layout()
     plt.show()
-    
-# Step 6b: Impute missing data with mean
-for col in bw_mean:
-        if bw_mean[col].isnull().astype(int).sum() > 0:
-            col_mean = bw_mean[col].mean()
-            bw_mean[col] = bw_mean[col].fillna(col_mean).round(2)
 
-for col in bw_mean.iloc[:, :-3]:
-    sns.distplot(bw_0[col])
-    plt.tight_layout()
-    plt.show()
-
-# Step 6c: Impute missing data with median
+# Step 6b: Impute missing data with median
 for col in bw_median:
         if bw_median[col].isnull().astype(int).sum() > 0:
             col_median = bw_median[col].median()
@@ -132,7 +121,6 @@ for col in bw_median.iloc[:, :-3]:
     sns.distplot(bw_0[col])
     plt.tight_layout()
     plt.show()
-
 
 # Step 7: Explore data
 # Step 7a: Correlation
@@ -147,10 +135,6 @@ sns.heatmap(corr1,
             linecolor = 'white',
             linewidths = 0.02,
             cbar = True)
-
-# Step 7b: Summary statistics
-bw1_summary = bw_median.iloc[:,:-3].describe()
-print(bw1_summary)
 
 """
 CORRELATION INTERPRETATION
