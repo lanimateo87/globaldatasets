@@ -147,3 +147,120 @@ alcohol consumption with child's birthweight. This means that the higher a
 mother's consumption of cigarette and alcohol are, the higher the likelihood
 that a child's birthweight will be lower than average.
 """
+
+# Step 7b: Outlier Analysis
+bw_median_quantiles = bw_median.loc[:, :].quantile([0.20,
+                                                    0.40,
+                                                    0.60,
+                                                    0.80,
+                                                    1.00])    
+print(bw_median_quantiles)
+
+for col in bw_median:
+    print(col)
+
+# Step 7c: Distribution
+# Birthweight
+plt.figure(figsize=(12,8))
+plt.subplot(2, 2, 1)
+sns.distplot(bw_median['bwght'],
+             bins = 35,
+             color = 'b')
+plt.xlabel('Birthweight')
+
+#Mother's age
+plt.figure(figsize=(12,8))
+plt.subplot(2, 2, 1)
+sns.distplot(bw_median['mage'],
+             bins = 25,
+             color = 'b')
+
+plt.xlabel("Mother's age")
+
+#Father's Age
+plt.figure(figsize=(12,8))
+plt.subplot(2, 2, 1)
+sns.distplot(bw_median['fage'],
+             bins = 25,
+             color = 'b')
+
+plt.xlabel("Father's age")
+
+#Average cigarette consumption
+plt.figure(figsize=(12,8))
+plt.subplot(2, 2, 1)
+sns.distplot(bw_median['cigs'],
+             bins = 25,
+             color = 'g')
+
+plt.xlabel("Average cigarette consumption")
+
+#Average alcohol consumption
+plt.figure(figsize=(12,8))
+plt.subplot(2, 2, 1)
+sns.distplot(bw_median['drink'],
+             bins = 15,
+             color = 'y')
+
+plt.xlabel("Average alcohol consumption")
+
+# Step 7d Scatterplots
+#Mother's Age
+sns.set(font_scale=1.5)
+bw_mage = sns.lmplot(x = 'mage',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = bw_median)
+plt.title ("Birthweight and Mother's Age")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Mother's Age")
+plt.show()
+
+#Father's Age
+sns.set(font_scale=1.5)
+bw_mage = sns.lmplot(x = 'fage',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = bw_median)
+plt.title ("Birthweight and Father's Age")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Father's Age")
+plt.show()
+
+#Average cigarette consumption
+sns.set(font_scale=1.5)
+bw_mage = sns.lmplot(x = 'cigs',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = bw_median)
+plt.title ("Birthweight and Average cigarette consumption")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Average cigarette consumption")
+plt.show()
+
+#Average alcohol consumption
+sns.set(font_scale=1.5)
+bw_mage = sns.lmplot(x = 'drink',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = bw_median)
+plt.title ("Birthweight and Average alcohol consumption")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Average alcohol consumption")
+plt.show()
