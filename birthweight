@@ -351,3 +351,14 @@ R-Squared:          {results_bwght.rsquared.round(3)}
 Adjusted R-Squared: {results_bwght.rsquared_adj.round(3)}
 """)
     
+predict = results_bwght.predict()
+y_hat   = pd.DataFrame(predict).round(2)
+resids  = results_bwght.resid.round(2)
+
+# We can find more functions available using the dir() command.
+dir(results_bwght)
+
+# Saving as a new dataset for future use.
+bw_median.to_excel('Birthweight_Dummies.xlsx')
+
+    
