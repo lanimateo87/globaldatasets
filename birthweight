@@ -162,7 +162,6 @@ for col in bw_median:
 # Step 7c: Distribution
 # Birthweight distribution
 plt.figure(figsize=(12,8))
-plt.subplot(2, 2, 1)
 sns.distplot(bw_median['bwght'],
              bins = 35,
              color = 'b')
@@ -181,7 +180,6 @@ plt.show()
 
 # Mother's age
 plt.figure(figsize=(12,8))
-plt.subplot(2, 2, 1)
 sns.distplot(bw_median['mage'],
              bins = 25,
              color = 'b')
@@ -201,7 +199,6 @@ plt.show()
 
 # Father's Age
 plt.figure(figsize=(12,8))
-plt.subplot(2, 2, 1)
 sns.distplot(bw_median['fage'],
              bins = 25,
              color = 'b')
@@ -221,7 +218,6 @@ plt.show()
 
 # Average cigarette consumption
 plt.figure(figsize=(12,8))
-plt.subplot(2, 2, 1)
 sns.distplot(bw_median['cigs'],
              bins = 25,
              color = 'g')
@@ -241,7 +237,6 @@ plt.show()
 
 # Average alcohol consumption
 plt.figure(figsize=(12,8))
-plt.subplot(2, 2, 1)
 sns.distplot(bw_median['drink'],
              bins = 15,
              color = 'y')
@@ -319,3 +314,7 @@ plt.title ("Birthweight and Average alcohol consumption")
 plt.ylabel ('Birthweight')
 plt.xlabel ("Average alcohol consumption")
 plt.show()
+
+##############################################################################
+#Regression Analysis
+##############################################################################
