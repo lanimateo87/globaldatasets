@@ -160,7 +160,7 @@ for col in bw_median:
     print(col)
 
 # Step 7c: Distribution
-# Birthweight
+# Birthweight distribution
 plt.figure(figsize=(12,8))
 plt.subplot(2, 2, 1)
 sns.distplot(bw_median['bwght'],
@@ -168,7 +168,18 @@ sns.distplot(bw_median['bwght'],
              color = 'b')
 plt.xlabel('Birthweight')
 
-#Mother's age
+# Birthweight outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'bwght',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ('Birthweight')
+plt.show()
+
+# Mother's age
 plt.figure(figsize=(12,8))
 plt.subplot(2, 2, 1)
 sns.distplot(bw_median['mage'],
@@ -177,7 +188,18 @@ sns.distplot(bw_median['mage'],
 
 plt.xlabel("Mother's age")
 
-#Father's Age
+# Mother's Age outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'mage',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Mother's Age")
+plt.show()
+
+# Father's Age
 plt.figure(figsize=(12,8))
 plt.subplot(2, 2, 1)
 sns.distplot(bw_median['fage'],
@@ -186,7 +208,18 @@ sns.distplot(bw_median['fage'],
 
 plt.xlabel("Father's age")
 
-#Average cigarette consumption
+# Father's Age outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'fage',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Father's Age")
+plt.show()
+
+# Average cigarette consumption
 plt.figure(figsize=(12,8))
 plt.subplot(2, 2, 1)
 sns.distplot(bw_median['cigs'],
@@ -195,7 +228,18 @@ sns.distplot(bw_median['cigs'],
 
 plt.xlabel("Average cigarette consumption")
 
-#Average alcohol consumption
+# Average cigarette consumption outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'cigs',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Average cigarette consumption")
+plt.show()
+
+# Average alcohol consumption
 plt.figure(figsize=(12,8))
 plt.subplot(2, 2, 1)
 sns.distplot(bw_median['drink'],
@@ -203,6 +247,17 @@ sns.distplot(bw_median['drink'],
              color = 'y')
 
 plt.xlabel("Average alcohol consumption")
+
+# Average alcohol consumption outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'drink',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Average alcohol consumption")
+plt.show()
 
 # Step 7d Scatterplots
 #Mother's Age
