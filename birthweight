@@ -217,7 +217,7 @@ plt.boxplot(x = 'meduc',
 plt.xlabel ("Mother's Education")
 plt.show()
 
-# Prenatal Care
+# Month of Prenatal Care
 plt.figure(figsize=(12,8))
 sns.distplot(bw_median['monpre'],
              bins = None,
@@ -225,7 +225,7 @@ sns.distplot(bw_median['monpre'],
 
 plt.xlabel("Timing of Prenatal Care")
 
-# Prenatal Care
+# Month of Prenatal Care Outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'monpre',
             data = bw_median,
@@ -234,6 +234,25 @@ plt.boxplot(x = 'monpre',
             meanline = True,
             showmeans = True)
 plt.xlabel ("Mother's Education")
+plt.show()
+
+# Number of Prenatal Care
+plt.figure(figsize=(12,8))
+sns.distplot(bw_median['npvis'],
+             bins = None,
+             color = 'b')
+
+plt.xlabel("Number of Prenatal Care Visits")
+
+# Number of Prenatal Care Outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'npvis',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Number of prenatal care visits")
 plt.show()
 
 # Father's Age
@@ -399,3 +418,36 @@ dir(results_bwght)
 
 # Saving as a new dataset for future use.
 bw_median.to_excel('Birthweight_Dummies.xlsx')
+
+"""
+INSIGHT
+The full model doesn't help and results to strong multicollinearity.
+Some of the variables doesn't inform the model and should be dropped.
+"""
+
+# Drop categorical variables
+bw_median = bw_median.drop(['male' ,
+                           'mwhte' ,
+                           'mblck' ,
+                           'moth' ,
+                           'fwhte' ,
+                           'fblck' ,
+                           'foth'],
+                           axis = 1)
+
+print(bw_median)
+
+# Train Data Set
+bw_median_target = bw_median.loc[:, 'bwght']
+
+X_train, X_test, y_train, y_test = train_test_split(
+                                               bw_median,
+                                               bw_median_target)
+
+# Training set 
+print(X_train.shape)
+print(y_train.shape)
+
+# Testing set
+print(X_test.shape)
+print(y_test.shape)
