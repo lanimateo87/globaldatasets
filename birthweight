@@ -17,28 +17,28 @@ from sklearn.model_selection import cross_val_score
 
 # Step 2: Import data set
 file = 'birthweight.xlsx'
-bw = pd.read_excel(file)
+df = pd.read_excel(file)
 
 # Step 3: Get general info about the full data set
-print(bw.columns)
-print(bw.head())
-print(bw.shape)
-print(bw.info())
-print(bw.describe().round(2))
+print(df.columns)
+print(df.head())
+print(df.shape)
+print(df.info())
+print(df.describe().round(2))
 
-# Step 4: Flag missing values: 
-print(bw.isnull().sum())
-print(bw.isnull().sum().sum())
-print(((((bw[:].isnull().sum())/bw[:].count()))).sum().round(2))
+# Step 4: Flag missing values:
+print(df.isnull().sum())
+print(df.isnull().sum().sum())
+print(((((df[:].isnull().sum())/df[:].count()))).sum().round(2))
 
-for col in bw:
-    if bw[col].isnull().astype(int).sum() > 0:
-        bw['m_'+col] = bw[col].isnull().astype(int)
-        
-bw= pd.DataFrame.copy(bw)
+for col in df:
+    if df[col].isnull().astype(int).sum() > 0:
+        df['m_'+col] = df[col].isnull().astype(int)
+
+df= pd.DataFrame.copy(df)
 
 # Step 5: Check if there is any significant correlation
-corr = bw.iloc[:, :-9].corr()
+corr = df.iloc[:, :-9].corr()
 print(corr)
 
 plt.figure(figsize=(15,15))
@@ -64,27 +64,27 @@ No point doing any further analysis on this data set
 # Step 2: Run packages
 # Step 3: Import new data set
 file = 'birthweight_feature_set.xlsx'
-bw1 = pd.read_excel(file)
+df1 = pd.read_excel(file)
 
 # Step 4: Get general info about the full data set
-print(bw1.columns)
-print(bw1.shape)
-print(bw1.info())
-bw1_summary = bw1.iloc[:,:-3].describe().round(2)
-print(bw1_summary)
+print(df1.columns)
+print(df1.shape)
+print(df1.info())
+df1_summary = df1.iloc[:,:-3].describe().round(2)
+print(df1_summary)
 
 # Step 5: Identify and flag missing values
-print(bw1.isnull().sum())
-print(bw1.isnull().sum().sum())
-print(((((bw1[:].isnull().sum())/bw1[:].count()))).sum().round(2))
+print(df1.isnull().sum())
+print(df1.isnull().sum().sum())
+print(((((df1[:].isnull().sum())/df1[:].count()))).sum().round(2))
 
-for col in bw1:
-    if bw1[col].isnull().astype(int).sum() > 0:
-        bw1['m_'+col] = bw1[col].isnull().astype(int)      
-bw1= pd.DataFrame.copy(bw1)
+for col in df1:
+    if df1[col].isnull().astype(int).sum() > 0:
+        df1['m_'+col] = df1[col].isnull().astype(int)
+df1= pd.DataFrame.copy(df1)
 
-a = bw1.isnull().sum().sum()
-b = bw1.iloc[:,-3:].sum().sum()
+a = df1.isnull().sum().sum()
+b = df1.iloc[:,-3:].sum().sum()
 
 if a == b:
     print('All missing values accounted for.')
@@ -100,32 +100,32 @@ There are 13 total null values.
 """
 
 # Step 6: Create independent dataframes to test imputation methods
-bw_0 = pd.DataFrame.copy(bw1)
-bw_median = pd.DataFrame.copy(bw_0)
+df_0 = pd.DataFrame.copy(df1)
+df_median = pd.DataFrame.copy(df_0)
 
 # Step 6a: Impute missing data with zero (0)
-bw_0= pd.DataFrame.copy(bw1)
-bw_0= bw_0.fillna(0)
+df_0= pd.DataFrame.copy(df1)
+df_0= df_0.fillna(0)
 
-for col in bw_0.iloc[:, :-3]:
-    sns.distplot(bw_0[col])
+for col in df_0.iloc[:, :-3]:
+    sns.distplot(df_0[col])
     plt.tight_layout()
     plt.show()
 
 # Step 6b: Impute missing data with median
-for col in bw_median:
-        if bw_median[col].isnull().astype(int).sum() > 0:
-            col_median = bw_median[col].median()
-            bw_median[col] = bw_median[col].fillna(col_median).round(2)
-            
-for col in bw_median.iloc[:, :-3]:
-    sns.distplot(bw_0[col])
+for col in df_median:
+        if df_median[col].isnull().astype(int).sum() > 0:
+            col_median = df_median[col].median()
+            df_median[col] = df_median[col].fillna(col_median).round(2)
+
+for col in df_median.iloc[:, :-3]:
+    sns.distplot(df_0[col])
     plt.tight_layout()
     plt.show()
 
 # Step 7: Explore data
 # Step 7a: Correlation
-corr1 = bw_median.iloc[:, :-3].corr()
+corr1 = df_median.iloc[:, :-3].corr()
 print(corr1)
 
 plt.figure(figsize=(15,12))
@@ -150,28 +150,28 @@ that a child's birthweight will be lower than average.
 """
 
 # Step 7b: Outlier Analysis
-bw_median_quantiles = bw_median.loc[:, :].quantile([0.20,
+df_median_quantiles = df_median.loc[:, :].quantile([0.20,
                                                     0.40,
                                                     0.60,
                                                     0.80,
-                                                    1.00])    
-print(bw_median_quantiles)
+                                                    1.00])
+print(df_median_quantiles)
 
-for col in bw_median:
+for col in df_median:
     print(col)
 
 # Step 7c: Distribution
 # Birthweight distribution
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['bwght'],
+sns.distplot(df_median['dfght'],
              bins = None,
              color = 'b')
 plt.xlabel('Birthweight')
 
 # Birthweight outliers
 plt.figure(figsize=(12,8))
-plt.boxplot(x = 'bwght',
-            data = bw_median,
+plt.boxplot(x = 'dfght',
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -181,7 +181,7 @@ plt.show()
 
 # Mother's age
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['mage'],
+sns.distplot(df_median['mage'],
              bins = None,
              color = 'b')
 
@@ -190,7 +190,7 @@ plt.xlabel("Mother's age")
 # Mother's Age outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'mage',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -200,7 +200,7 @@ plt.show()
 
 # Mother's Education
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['meduc'],
+sns.distplot(df_median['meduc'],
              bins = None,
              color = 'b')
 
@@ -209,7 +209,7 @@ plt.xlabel("Mother's Education")
 # Mother's Education outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'meduc',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -219,7 +219,7 @@ plt.show()
 
 # Month of Prenatal Care
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['monpre'],
+sns.distplot(df_median['monpre'],
              bins = None,
              color = 'b')
 
@@ -228,7 +228,7 @@ plt.xlabel("Timing of Prenatal Care")
 # Month of Prenatal Care Outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'monpre',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -238,7 +238,7 @@ plt.show()
 
 # Number of Prenatal Care
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['npvis'],
+sns.distplot(df_median['npvis'],
              bins = None,
              color = 'b')
 
@@ -247,7 +247,7 @@ plt.xlabel("Number of Prenatal Care Visits")
 # Number of Prenatal Care Outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'npvis',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -257,7 +257,7 @@ plt.show()
 
 # Father's Age
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['fage'],
+sns.distplot(df_median['fage'],
              bins = 25,
              color = 'b')
 
@@ -266,7 +266,7 @@ plt.xlabel("Father's age")
 # Father's Age outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'fage',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -276,7 +276,7 @@ plt.show()
 
 # Average cigarette consumption
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['cigs'],
+sns.distplot(df_median['cigs'],
              bins = 25,
              color = 'g')
 
@@ -285,7 +285,7 @@ plt.xlabel("Average cigarette consumption")
 # Average cigarette consumption outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'cigs',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -295,7 +295,7 @@ plt.show()
 
 # Average alcohol consumption
 plt.figure(figsize=(12,8))
-sns.distplot(bw_median['drink'],
+sns.distplot(df_median['drink'],
              bins = 15,
              color = 'y')
 
@@ -304,7 +304,7 @@ plt.xlabel("Average alcohol consumption")
 # Average alcohol consumption outliers
 plt.figure(figsize=(12,8))
 plt.boxplot(x = 'drink',
-            data = bw_median,
+            data = df_median,
             vert = False,
             patch_artist = True,
             meanline = True,
@@ -315,14 +315,14 @@ plt.show()
 # Step 7d Scatterplots
 #Mother's Age
 sns.set(font_scale=1.5)
-bw_mage = sns.lmplot(x = 'mage',
-                y = 'bwght',
+df_mage = sns.lmplot(x = 'mage',
+                y = 'dfght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
                 scatter_kws={"s": 300},
                 palette = 'plasma',
-                data = bw_median)
+                data = df_median)
 plt.title ("Birthweight and Mother's Age")
 plt.ylabel ('Birthweight')
 plt.xlabel ("Mother's Age")
@@ -330,14 +330,14 @@ plt.show()
 
 #Father's Age
 sns.set(font_scale=1.5)
-bw_mage = sns.lmplot(x = 'fage',
-                y = 'bwght',
+df_mage = sns.lmplot(x = 'fage',
+                y = 'dfght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
                 scatter_kws={"s": 300},
                 palette = 'plasma',
-                data = bw_median)
+                data = df_median)
 plt.title ("Birthweight and Father's Age")
 plt.ylabel ('Birthweight')
 plt.xlabel ("Father's Age")
@@ -345,14 +345,14 @@ plt.show()
 
 #Average cigarette consumption
 sns.set(font_scale=1.5)
-bw_mage = sns.lmplot(x = 'cigs',
-                y = 'bwght',
+df_mage = sns.lmplot(x = 'cigs',
+                y = 'dfght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
                 scatter_kws={"s": 300},
                 palette = 'plasma',
-                data = bw_median)
+                data = df_median)
 plt.title ("Birthweight and Average cigarette consumption")
 plt.ylabel ('Birthweight')
 plt.xlabel ("Average cigarette consumption")
@@ -360,14 +360,14 @@ plt.show()
 
 #Average alcohol consumption
 sns.set(font_scale=1.5)
-bw_mage = sns.lmplot(x = 'drink',
-                y = 'bwght',
+df_mage = sns.lmplot(x = 'drink',
+                y = 'dfght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
                 scatter_kws={"s": 300},
                 palette = 'plasma',
-                data = bw_median)
+                data = df_median)
 plt.title ("Birthweight and Average alcohol consumption")
 plt.ylabel ('Birthweight')
 plt.xlabel ("Average alcohol consumption")
@@ -377,47 +377,47 @@ plt.show()
 #Regression Analysis
 ##############################################################################
 # Full Model
-bw_median_bwght = smf.ols(formula = """bwght ~ bw_median['mage'] +
-                                              bw_median['meduc'] +
-                                              bw_median['monpre'] +
-                                              bw_median['npvis'] +
-                                              bw_median['fage'] +
-                                              bw_median['feduc'] +
-                                              bw_median['omaps'] +
-                                              bw_median['fmaps'] +
-                                              bw_median['cigs'] +
-                                              bw_median['drink'] +
-                                              bw_median['male'] +
-                                              bw_median['mwhte'] +
-                                              bw_median['mblck'] +
-                                              bw_median['moth'] +
-                                              bw_median['fwhte'] +
-                                              bw_median['fblck'] +
-                                              bw_median['foth'] +
-                                              bw_median['bwght'] +
-                                              bw_median['m_meduc'] +
-                                              bw_median['m_npvis'] +
-                                              bw_median['m_feduc']
+df_median_dfght = smf.ols(formula = """dfght ~ df_median['mage'] +
+                                              df_median['meduc'] +
+                                              df_median['monpre'] +
+                                              df_median['npvis'] +
+                                              df_median['fage'] +
+                                              df_median['feduc'] +
+                                              df_median['omaps'] +
+                                              df_median['fmaps'] +
+                                              df_median['cigs'] +
+                                              df_median['drink'] +
+                                              df_median['male'] +
+                                              df_median['mwhte'] +
+                                              df_median['mblck'] +
+                                              df_median['moth'] +
+                                              df_median['fwhte'] +
+                                              df_median['fblck'] +
+                                              df_median['foth'] +
+                                              df_median['dfght'] +
+                                              df_median['m_meduc'] +
+                                              df_median['m_npvis'] +
+                                              df_median['m_feduc']
                                               """,
-                                              data = bw_median)
-results_bwght = bw_median_bwght.fit()
-print(results_bwght.summary())
+                                              data = df_median)
+results_dfght = df_median_dfght.fit()
+print(results_dfght.summary())
 
 print(f"""
 Summary Statistics:
-R-Squared:          {results_bwght.rsquared.round(3)}
-Adjusted R-Squared: {results_bwght.rsquared_adj.round(3)}
+R-Squared:          {results_dfght.rsquared.round(3)}
+Adjusted R-Squared: {results_dfght.rsquared_adj.round(3)}
 """)
-    
-predict = results_bwght.predict()
+
+predict = results_dfght.predict()
 y_hat   = pd.DataFrame(predict).round(2)
-resids  = results_bwght.resid.round(2)
+resids  = results_dfght.resid.round(2)
 
 # We can find more functions available using the dir() command.
-dir(results_bwght)
+dir(results_dfght)
 
 # Saving as a new dataset for future use.
-bw_median.to_excel('Birthweight_Dummies.xlsx')
+df_median.to_excel('Birthweight_Dummies.xlsx')
 
 """
 INSIGHT
@@ -426,14 +426,14 @@ Some of the variables doesn't inform the model and should be dropped.
 """
 
 # Prioritize and drop variables
-bw_median_data = bw_median.drop(['bwght',
+df_median_data = df_median.drop(['dfght',
                             'omaps',
                             'fmaps',
                             'fage',
                             'feduc',
                             'm_meduc',
                             'm_feduc',
-                            'm_npvis',                            
+                            'm_npvis',
                             'male' ,
                            'mwhte' ,
                            'mblck' ,
@@ -443,16 +443,16 @@ bw_median_data = bw_median.drop(['bwght',
                            'foth'],
                            axis = 1)
 
-print(bw_median_data)
+print(df_median_data)
 
 # Train Data Set
-bw_median_target = bw_median.loc[:, 'bwght']
+df_median_target = df_median.loc[:, 'dfght']
 
 X_train, X_test, y_train, y_test = train_test_split(
-                                               bw_median_data,
-                                               bw_median_target)
+                                               df_median_data,
+                                               df_median_target)
 
-# Training set 
+# Training set
 print(X_train.shape)
 print(y_train.shape)
 
@@ -466,12 +466,12 @@ while 33% went to the testing dataset
 """
 
 X_train, X_test, y_train, y_test = train_test_split(
-            bw_median_data,
-            bw_median_target,
-            test_size = 0.33,
+            df_median_data,
+            df_median_target,
+            test_size = 0.25,
             random_state = 508)
 
-# Training set 
+# Training set
 print(X_train.shape)
 print(y_train.shape)
 
@@ -496,7 +496,7 @@ print(f"""
 Test set predictions:
 {y_pred}
 """)
-    
+
 y_score = knn_reg.score(X_test, y_test)#rsquared value
 y_score_train = knn_reg.score(X_train, y_train)
 y_score_test = knn_reg.score(X_test, y_test)
@@ -522,13 +522,13 @@ for n_neighbors in neighbors_settings:
     # Building the model
     clf = KNeighborsRegressor(n_neighbors = n_neighbors)
     clf.fit(X_train, y_train)
-    
+
     # Recording the training set accuracy
     training_accuracy.append(clf.score(X_train, y_train))
-    
+
     # Recording the generalization accuracy
     test_accuracy.append(clf.score(X_test, y_test))
-    
+
 fig, ax = plt.subplots(figsize=(12,9))
 plt.plot(neighbors_settings, training_accuracy, label = "training accuracy")
 plt.plot(neighbors_settings, test_accuracy, label = "test accuracy")
@@ -558,7 +558,7 @@ y_score = knn_reg.score(X_test, y_test)
 print(y_score)
 print(f"""
 Our base to compare other models is {y_score.round(3)}.
-    
+
 This base helps us evaluate more complicated models and lets us consider
 tradeoffs between accuracy and interpretability.
 """)
