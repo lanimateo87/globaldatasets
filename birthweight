@@ -56,6 +56,7 @@ Nine (9) variables have null values.
 There are 387 total null values.
 More than 20% of the observations have missing values.
 There is no correlation between birth weight and any of the variables
+There isn't significant variance among the variables.
 No point doing any further analysis on this data set
 """
 
@@ -163,7 +164,7 @@ for col in bw_median:
 # Birthweight distribution
 plt.figure(figsize=(12,8))
 sns.distplot(bw_median['bwght'],
-             bins = 35,
+             bins = None,
              color = 'b')
 plt.xlabel('Birthweight')
 
@@ -181,7 +182,7 @@ plt.show()
 # Mother's age
 plt.figure(figsize=(12,8))
 sns.distplot(bw_median['mage'],
-             bins = 25,
+             bins = None,
              color = 'b')
 
 plt.xlabel("Mother's age")
@@ -195,6 +196,44 @@ plt.boxplot(x = 'mage',
             meanline = True,
             showmeans = True)
 plt.xlabel ("Mother's Age")
+plt.show()
+
+# Mother's Education
+plt.figure(figsize=(12,8))
+sns.distplot(bw_median['meduc'],
+             bins = None,
+             color = 'b')
+
+plt.xlabel("Mother's Education")
+
+# Mother's Education outliers
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'meduc',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Mother's Education")
+plt.show()
+
+# Prenatal Care
+plt.figure(figsize=(12,8))
+sns.distplot(bw_median['monpre'],
+             bins = None,
+             color = 'b')
+
+plt.xlabel("Timing of Prenatal Care")
+
+# Prenatal Care
+plt.figure(figsize=(12,8))
+plt.boxplot(x = 'monpre',
+            data = bw_median,
+            vert = False,
+            patch_artist = True,
+            meanline = True,
+            showmeans = True)
+plt.xlabel ("Mother's Education")
 plt.show()
 
 # Father's Age
@@ -360,5 +399,3 @@ dir(results_bwght)
 
 # Saving as a new dataset for future use.
 bw_median.to_excel('Birthweight_Dummies.xlsx')
-
-    
