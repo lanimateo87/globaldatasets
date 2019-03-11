@@ -425,8 +425,16 @@ The full model doesn't help and results to strong multicollinearity.
 Some of the variables doesn't inform the model and should be dropped.
 """
 
-# Drop categorical variables
-bw_median = bw_median.drop(['male' ,
+# Prioritize and drop variables
+bw_median_data = bw_median.drop(['bwght',
+                            'omaps',
+                            'fmaps',
+                            'fage',
+                            'feduc',
+                            'm_meduc',
+                            'm_feduc',
+                            'm_npvis',                            
+                            'male' ,
                            'mwhte' ,
                            'mblck' ,
                            'moth' ,
@@ -435,13 +443,13 @@ bw_median = bw_median.drop(['male' ,
                            'foth'],
                            axis = 1)
 
-print(bw_median)
+print(bw_median_data)
 
 # Train Data Set
 bw_median_target = bw_median.loc[:, 'bwght']
 
 X_train, X_test, y_train, y_test = train_test_split(
-                                               bw_median,
+                                               bw_median_data,
                                                bw_median_target)
 
 # Training set 
@@ -451,3 +459,111 @@ print(y_train.shape)
 # Testing set
 print(X_test.shape)
 print(y_test.shape)
+
+"""
+67% of the data went to the training dataset,
+while 33% went to the testing dataset
+"""
+
+X_train, X_test, y_train, y_test = train_test_split(
+            bw_median_data,
+            bw_median_target,
+            test_size = 0.33,
+            random_state = 508)
+
+# Training set 
+print(X_train.shape)
+print(y_train.shape)
+
+# Testing set
+print(X_test.shape)
+print(y_test.shape)
+
+knn_reg = KNeighborsRegressor(algorithm = 'auto',
+                              n_neighbors = 1)
+
+# Checking the type of this new object
+type(knn_reg)
+
+# Teaching (fitting) the algorithm based on the training data
+knn_reg.fit(X_train, y_train)
+
+# Predicting on the X_data that the model has never seen before
+y_pred = knn_reg.predict(X_test)
+
+# Printing out prediction values for each test observation
+print(f"""
+Test set predictions:
+{y_pred}
+""")
+    
+y_score = knn_reg.score(X_test, y_test)#rsquared value
+y_score_train = knn_reg.score(X_train, y_train)
+y_score_test = knn_reg.score(X_test, y_test)
+
+# The score is directly comparable to R-Square
+print(y_score)
+print(y_score_train)#training data should never be one, overfit data
+print(y_score_test)
+
+"""
+y_score_train is equal to 1. Hence data is overfit.
+"""
+# Creating two lists, one for training set accuracy and the other for test
+# set accuracy
+training_accuracy = []
+test_accuracy = []
+
+# Building a visualization to check to see  1 to 50
+neighbors_settings = range(1, 50)#set number of neighbors
+
+
+for n_neighbors in neighbors_settings:
+    # Building the model
+    clf = KNeighborsRegressor(n_neighbors = n_neighbors)
+    clf.fit(X_train, y_train)
+    
+    # Recording the training set accuracy
+    training_accuracy.append(clf.score(X_train, y_train))
+    
+    # Recording the generalization accuracy
+    test_accuracy.append(clf.score(X_test, y_test))
+    
+fig, ax = plt.subplots(figsize=(12,9))
+plt.plot(neighbors_settings, training_accuracy, label = "training accuracy")
+plt.plot(neighbors_settings, test_accuracy, label = "test accuracy")
+plt.ylabel("Accuracy")
+plt.xlabel("n_neighbors")
+plt.legend()
+plt.show()
+
+########################
+# What is the optimal number of neighbors?
+########################
+
+print(max(test_accuracy))
+print(test_accuracy.index(max(test_accuracy))+1)
+# The best results occur when k = 5.
+
+# Building a model with k = 5
+knn_reg = KNeighborsRegressor(algorithm = 'auto',
+                              n_neighbors = 5)
+
+# Fitting the model based on the training data
+knn_reg.fit(X_train, y_train)
+y_pred = knn_reg.predict(X_test)
+y_score = knn_reg.score(X_test, y_test)
+
+# The score is directly comparable to R-Square
+print(y_score)
+print(f"""
+Our base to compare other models is {y_score.round(3)}.
+    
+This base helps us evaluate more complicated models and lets us consider
+tradeoffs between accuracy and interpretability.
+""")
+#Test score based on top 4 var by corr mage, fage, cigs, drink is 0.496
+#Test score with mage, monpre, npvis, fage, cigs, drink is 0.462
+#Test score with mage, fage, meduc, feduc, monpre, npvis, cigs, drink is 0.512
+#Test score for mage, fage, meduc, monpre, npvis, cigs, drink is 0.534
+#Test score with mage, meduc, monpre, npvis, cigs, drink is 0.546
