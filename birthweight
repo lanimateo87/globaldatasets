@@ -3,7 +3,6 @@
 Created on Wed Mar  6 14:45:22 2019
 @author: Lani L. Mateo
 Purpose: Predict the factors affecting low birth weight.
-Note: Two (2) raw data set explored
 """
 # Step 1: Import modules
 import pandas as pd
