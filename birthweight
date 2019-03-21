@@ -18,7 +18,7 @@ from sklearn.model_selection import cross_val_score
 file = 'birthweight_feature_set.xlsx'
 df1 = pd.read_excel(file)
 
-# Step34: Get general info about the full data set
+# Step3: Get general info about the full data set
 print(df1.columns)
 print(df1.shape)
 print(df1.info())
