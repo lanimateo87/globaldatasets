@@ -15,72 +15,25 @@ from sklearn.neighbors import KNeighborsRegressor
 import sklearn.metrics
 from sklearn.model_selection import cross_val_score
 
-# Step 2: Import data set
-file = 'birthweight.xlsx'
-df = pd.read_excel(file)
-
-# Step 3: Get general info about the full data set
-print(df.columns)
-print(df.head())
-print(df.shape)
-print(df.info())
-print(df.describe().round(2))
-
-# Step 4: Flag missing values:
-print(df.isnull().sum())
-print(df.isnull().sum().sum())
-print(((((df[:].isnull().sum())/df[:].count()))).sum().round(2))
-
-for col in df:
-    if df[col].isnull().astype(int).sum() > 0:
-        df['m_'+col] = df[col].isnull().astype(int)
-
-df= pd.DataFrame.copy(df)
-
-# Step 5: Check if there is any significant correlation
-corr = df.iloc[:, :-9].corr()
-print(corr)
-
-plt.figure(figsize=(15,15))
-sns.set(font_scale=1.05)
-sns.heatmap(corr,
-            square = True,
-            annot = True,
-            linecolor = 'white',
-            linewidths = 0.05)
-
-"""
-DATA SET INSIGHT
-There are 18 variables and 1832 observations.
-Nine (9) variables have null values.
-There are 387 total null values.
-More than 20% of the observations have missing values.
-There is no correlation between birth weight and any of the variables
-There isn't significant variance among the variables.
-No point doing any further analysis on this data set
-"""
-
-# Step 1: Clear variable explorer and console
-# Step 2: Run packages
-# Step 3: Import new data set
+# Step 2: Import file
 file = 'birthweight_feature_set.xlsx'
 df1 = pd.read_excel(file)
 
-# Step 4: Get general info about the full data set
+# Step34: Get general info about the full data set
 print(df1.columns)
 print(df1.shape)
 print(df1.info())
 df1_summary = df1.iloc[:,:-3].describe().round(2)
 print(df1_summary)
 
-# Step 5: Identify and flag missing values
+# Step 4: Identify and flag missing values
 print(df1.isnull().sum())
 print(df1.isnull().sum().sum())
 print(((((df1[:].isnull().sum())/df1[:].count()))).sum().round(2))
 
 for col in df1:
     if df1[col].isnull().astype(int).sum() > 0:
-        df1['m_'+col] = df1[col].isnull().astype(int)
+        df1['m_'+col] = df1[col].isnull().astype(int)      
 df1= pd.DataFrame.copy(df1)
 
 a = df1.isnull().sum().sum()
@@ -99,16 +52,15 @@ There are 13 total null values.
 7% of the observations having missing values.
 """
 
-# Step 6: Create independent dataframes to test imputation methods
-df_0 = pd.DataFrame.copy(df1)
-df_median = pd.DataFrame.copy(df_0)
+# Step 5: Create independent dataframes to test imputation methods
+df_median = pd.DataFrame.copy(df1)
 
 # Step 6a: Impute missing data with zero (0)
-df_0= pd.DataFrame.copy(df1)
-df_0= df_0.fillna(0)
+df= pd.DataFrame.copy(df1)
+df= df.fillna(0)
 
-for col in df_0.iloc[:, :-3]:
-    sns.distplot(df_0[col])
+for col in df.iloc[:, :-3]:
+    sns.distplot(df[col])
     plt.tight_layout()
     plt.show()
 
@@ -117,19 +69,19 @@ for col in df_median:
         if df_median[col].isnull().astype(int).sum() > 0:
             col_median = df_median[col].median()
             df_median[col] = df_median[col].fillna(col_median).round(2)
-
-for col in df_median.iloc[:, :-3]:
-    sns.distplot(df_0[col])
+            
+for col in df_median.iloc[:, :-9]:
+    sns.distplot(df[col])
     plt.tight_layout()
     plt.show()
 
 # Step 7: Explore data
 # Step 7a: Correlation
-corr1 = df_median.iloc[:, :-3].corr()
+corr1 = df_median.iloc[:, :-9].corr()
 print(corr1)
 
 plt.figure(figsize=(15,12))
-sns.set(font_scale=1.15)
+sns.set(font_scale=1)
 sns.heatmap(corr1,
             square = True,
             annot = True,
@@ -154,7 +106,7 @@ df_median_quantiles = df_median.loc[:, :].quantile([0.20,
                                                     0.40,
                                                     0.60,
                                                     0.80,
-                                                    1.00])
+                                                    1.00])    
 print(df_median_quantiles)
 
 for col in df_median:
@@ -163,14 +115,14 @@ for col in df_median:
 # Step 7c: Distribution
 # Birthweight distribution
 plt.figure(figsize=(12,8))
-sns.distplot(df_median['dfght'],
+sns.distplot(df_median['bwght'],
              bins = None,
              color = 'b')
 plt.xlabel('Birthweight')
 
 # Birthweight outliers
 plt.figure(figsize=(12,8))
-plt.boxplot(x = 'dfght',
+plt.boxplot(x = 'bwght',
             data = df_median,
             vert = False,
             patch_artist = True,
@@ -277,7 +229,7 @@ plt.show()
 # Average cigarette consumption
 plt.figure(figsize=(12,8))
 sns.distplot(df_median['cigs'],
-             bins = 25,
+             bins = 15,
              color = 'g')
 
 plt.xlabel("Average cigarette consumption")
@@ -313,10 +265,10 @@ plt.xlabel ("Average alcohol consumption")
 plt.show()
 
 # Step 7d Scatterplots
-#Mother's Age
+# Mother's Age
 sns.set(font_scale=1.5)
 df_mage = sns.lmplot(x = 'mage',
-                y = 'dfght',
+                y = 'bwght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
@@ -328,10 +280,25 @@ plt.ylabel ('Birthweight')
 plt.xlabel ("Mother's Age")
 plt.show()
 
-#Father's Age
+# Mother's Education
+sns.set(font_scale=1.5)
+df_mage = sns.lmplot(x = 'meduc',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = df_median)
+plt.title ("Birthweight and Mother's Education")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Mother's Education")
+plt.show()
+
+# Father's Age
 sns.set(font_scale=1.5)
 df_mage = sns.lmplot(x = 'fage',
-                y = 'dfght',
+                y = 'bwght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
@@ -343,10 +310,55 @@ plt.ylabel ('Birthweight')
 plt.xlabel ("Father's Age")
 plt.show()
 
+# Father's Education
+sns.set(font_scale=1.5)
+df_mage = sns.lmplot(x = 'feduc',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = df_median)
+plt.title ("Birthweight and Father's Education")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Father's Education")
+plt.show()
+
+# Month of prenatal visits
+sns.set(font_scale=1.5)
+df_mage = sns.lmplot(x = 'monpre',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = df_median)
+plt.title ("Birthweight and Month of Prenatal Visit")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Month of Prenatal Visit")
+plt.show()
+
+#Number of prenatal visits
+sns.set(font_scale=1.5)
+df_mage = sns.lmplot(x = 'npvis',
+                y = 'bwght',
+                height=8,
+                aspect= 1.5,
+                fit_reg = True,
+                scatter_kws={"s": 300},
+                palette = 'plasma',
+                data = df_median)
+plt.title ("Birthweight and Number of Prenatal Visit")
+plt.ylabel ('Birthweight')
+plt.xlabel ("Number of Prenatal Visit")
+plt.show()
+
 #Average cigarette consumption
 sns.set(font_scale=1.5)
 df_mage = sns.lmplot(x = 'cigs',
-                y = 'dfght',
+                y = 'bwght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
@@ -361,7 +373,7 @@ plt.show()
 #Average alcohol consumption
 sns.set(font_scale=1.5)
 df_mage = sns.lmplot(x = 'drink',
-                y = 'dfght',
+                y = 'bwght',
                 height=8,
                 aspect= 1.5,
                 fit_reg = True,
@@ -373,86 +385,118 @@ plt.ylabel ('Birthweight')
 plt.xlabel ("Average alcohol consumption")
 plt.show()
 
-##############################################################################
-#Regression Analysis
-##############################################################################
-# Full Model
-df_median_dfght = smf.ols(formula = """dfght ~ df_median['mage'] +
-                                              df_median['meduc'] +
-                                              df_median['monpre'] +
-                                              df_median['npvis'] +
-                                              df_median['fage'] +
-                                              df_median['feduc'] +
-                                              df_median['omaps'] +
-                                              df_median['fmaps'] +
-                                              df_median['cigs'] +
-                                              df_median['drink'] +
-                                              df_median['male'] +
-                                              df_median['mwhte'] +
-                                              df_median['mblck'] +
-                                              df_median['moth'] +
-                                              df_median['fwhte'] +
-                                              df_median['fblck'] +
-                                              df_median['foth'] +
-                                              df_median['dfght'] +
-                                              df_median['m_meduc'] +
-                                              df_median['m_npvis'] +
-                                              df_median['m_feduc']
-                                              """,
-                                              data = df_median)
-results_dfght = df_median_dfght.fit()
-print(results_dfght.summary())
+# Flag Outliers
 
-print(f"""
-Summary Statistics:
-R-Squared:          {results_dfght.rsquared.round(3)}
-Adjusted R-Squared: {results_dfght.rsquared_adj.round(3)}
-""")
+mage_high = 35
+monpre_high = 4
+npvis_lo = 9
+npvis_hi = 15
+fage_hi = 45
+feduc_lo = 6
+drink_high = 12
+bweight_lo = 2500
 
-predict = results_dfght.predict()
-y_hat   = pd.DataFrame(predict).round(2)
-resids  = results_dfght.resid.round(2)
+# Birth weight
+df_median['out_bwght'] = 0
+for val in enumerate(df_median.loc[ : , 'bwght']):
+    if val[1] <= bweight_lo:
+        df_median.loc[val[0], 'out_bwght'] = -1
 
-# We can find more functions available using the dir() command.
-dir(results_dfght)
+# Prenatal visits
+df_median['out_npvis'] = 0
+for val in enumerate(df_median.loc[ : , 'npvis']):
+    
+    if val[1] > npvis_hi:
+        df_median.loc[val[0], 'out_npvis'] = 1
+      
+for val in enumerate(df_median.loc[ : , 'npvis']):    
+    if val[1] < npvis_lo:
+        df_median.loc[val[0], 'out_npvis'] = -1
+        
+# Father's Education        
+df_median['out_feduc'] = 0
+for val in enumerate(df_median.loc[ : , 'feduc']):   
+    if val[1] <= feduc_lo:
+        df_median.loc[val[0], 'out_feduc'] = -1
+            
+# Father's age        
+df_median['out_fage'] = 0
+for val in enumerate(df_median.loc[ : , 'fage']):   
+    if val[1] >= fage_hi:
+        df_median.loc[val[0], 'out_fage'] = 1
 
-# Saving as a new dataset for future use.
-df_median.to_excel('Birthweight_Dummies.xlsx')
+# Mother's age        
+df_median['out_mage'] = 0
+for val in enumerate(df_median.loc[ : , 'mage']):    
+    if val[1] >= mage_high:
+        df_median.loc[val[0], 'out_mage'] = 1
+        
+# Month prenatal care started        
+df_median['out_monpre'] = 0
+for val in enumerate(df_median.loc[ : , 'monpre']):    
+    if val[1] >= monpre_high:
+        df_median.loc[val[0], 'out_monpre'] = 1
 
-"""
-INSIGHT
-The full model doesn't help and results to strong multicollinearity.
-Some of the variables doesn't inform the model and should be dropped.
-"""
+#Father's education in years        
+df_median['out_feduc'] = 0
+for val in enumerate(df_median.loc[ : , 'feduc']):    
+    if val[1] <= feduc_lo:
+        df_median.loc[val[0], 'out_feduc'] = 1  
 
+# Average drinks per week         
+df_median['out_drink'] = 0
+for val in enumerate(df_median.loc[ : , 'drink']):    
+    if val[1] >= drink_high:
+        df_median.loc[val[0], 'out_drink'] = 1
+        
+print(df_median)
+
+#USING KNN for prediction
 # Prioritize and drop variables
-df_median_data = df_median.drop(['dfght',
-                            'omaps',
-                            'fmaps',
-                            'fage',
-                            'feduc',
-                            'm_meduc',
-                            'm_feduc',
-                            'm_npvis',
-                            'male' ,
-                           'mwhte' ,
-                           'mblck' ,
-                           'moth' ,
-                           'fwhte' ,
-                           'fblck' ,
-                           'foth'],
-                           axis = 1)
+df_data= df_median.drop(['bwght',
+                  #'mage',
+                  #'meduc',
+                  'monpre', 
+                  'npvis', 
+                  #'fage', 
+                  'feduc',
+                  'omaps',
+                  'fmaps',
+                  #'cigs',
+                  #'drink',
+                  'male', 
+                  'm_meduc',
+                  'm_npvis',
+                  'm_feduc',
+                  'out_mage',
+                  'out_monpre',
+                  'fwhte',
+                  'foth',
+                  'fblck', 
+                  'moth', 
+                  'mblck', 
+                  'mwhte',
+                  'out_npvis',
+                  'out_fage',
+                  'out_feduc',
+                  'out_drink'],axis = 1)
+    
 
-print(df_median_data)
+#Test 1 mage, meduc, fage, cigs, drink score at k = 7 0.700 accuracy
 
-# Train Data Set
-df_median_target = df_median.loc[:, 'dfght']
+
+df_target = df_median.loc[:, 'bwght']
+print(df_target)
+print(df_data)
 
 X_train, X_test, y_train, y_test = train_test_split(
-                                               df_median_data,
-                                               df_median_target)
+                                               df_data,
+                                               df_target, test_size = 0.10,
+                                               random_state = 508)
 
-# Training set
+# Let's check to make sure our shapes line up.
+
+# Training set 
 print(X_train.shape)
 print(y_train.shape)
 
@@ -460,27 +504,64 @@ print(y_train.shape)
 print(X_test.shape)
 print(y_test.shape)
 
-"""
-67% of the data went to the training dataset,
-while 33% went to the testing dataset
-"""
+################################################################
+#Knn Model
+#############################################################
 
-X_train, X_test, y_train, y_test = train_test_split(
-            df_median_data,
-            df_median_target,
-            test_size = 0.25,
-            random_state = 508)
+# Creating two lists, one for training set accuracy and the other for test
+# set accuracy
+training_accuracy = []
+test_accuracy = []
 
-# Training set
-print(X_train.shape)
-print(y_train.shape)
 
-# Testing set
-print(X_test.shape)
-print(y_test.shape)
+# Building a visualization to check to see  1 to 50
+neighbors_settings = range(1, 51)
 
+for n_neighbors in neighbors_settings:
+    # Building the model
+    clf = KNeighborsRegressor(n_neighbors = n_neighbors)
+    clf.fit(X_train, y_train)
+    
+    # Recording the training set accuracy
+    training_accuracy.append(clf.score(X_train, y_train))
+    
+    # Recording the generalization accuracy
+    test_accuracy.append(clf.score(X_test, y_test))
+
+# Plotting the visualization
+fig, ax = plt.subplots(figsize=(12,9))
+plt.plot(neighbors_settings, training_accuracy, label = "training accuracy")
+plt.plot(neighbors_settings, test_accuracy, label = "test accuracy")
+plt.ylabel("Accuracy")
+plt.xlabel("n_neighbors")
+plt.legend()
+plt.show()
+
+########################
+# What is the optimal number of neighbors?
+########################
+print(test_accuracy.index(max(test_accuracy)))
+# The best results occur when k = 5. Remember counting starts at 0 that's why it's 5
+
+# Building a model with k = 5
 knn_reg = KNeighborsRegressor(algorithm = 'auto',
-                              n_neighbors = 1)
+                              n_neighbors = 5)
+
+# Fitting the model based on the training data
+knn_reg.fit(X_train, y_train)
+
+y_pred = knn_reg.predict(X_test)
+
+# Scoring the model
+y_score = knn_reg.score(X_test, y_test)
+
+# The score is directly comparable to R-Square
+print(y_score)
+
+########################################################
+#Using x neighbors
+knn_reg = KNeighborsRegressor(algorithm = 'auto',
+                              n_neighbors = 7)
 
 # Checking the type of this new object
 type(knn_reg)
@@ -497,73 +578,14 @@ Test set predictions:
 {y_pred}
 """)
 
-y_score = knn_reg.score(X_test, y_test)#rsquared value
-y_score_train = knn_reg.score(X_train, y_train)
+# Calling the score method, which compares the predicted values to the actual
+# values
 y_score_test = knn_reg.score(X_test, y_test)
+y_score_train = knn_reg.score(X_train, y_train)
 
 # The score is directly comparable to R-Square
-print(y_score)
-print(y_score_train)#training data should never be one, overfit data
-print(y_score_test)
-
-"""
-y_score_train is equal to 1. Hence data is overfit.
-"""
-# Creating two lists, one for training set accuracy and the other for test
-# set accuracy
-training_accuracy = []
-test_accuracy = []
-
-# Building a visualization to check to see  1 to 50
-neighbors_settings = range(1, 50)#set number of neighbors
-
-
-for n_neighbors in neighbors_settings:
-    # Building the model
-    clf = KNeighborsRegressor(n_neighbors = n_neighbors)
-    clf.fit(X_train, y_train)
-
-    # Recording the training set accuracy
-    training_accuracy.append(clf.score(X_train, y_train))
-
-    # Recording the generalization accuracy
-    test_accuracy.append(clf.score(X_test, y_test))
-
-fig, ax = plt.subplots(figsize=(12,9))
-plt.plot(neighbors_settings, training_accuracy, label = "training accuracy")
-plt.plot(neighbors_settings, test_accuracy, label = "test accuracy")
-plt.ylabel("Accuracy")
-plt.xlabel("n_neighbors")
-plt.legend()
-plt.show()
-
-########################
-# What is the optimal number of neighbors?
-########################
-
-print(max(test_accuracy))
-print(test_accuracy.index(max(test_accuracy))+1)
-# The best results occur when k = 5.
-
-# Building a model with k = 5
-knn_reg = KNeighborsRegressor(algorithm = 'auto',
-                              n_neighbors = 5)
-
-# Fitting the model based on the training data
-knn_reg.fit(X_train, y_train)
-y_pred = knn_reg.predict(X_test)
-y_score = knn_reg.score(X_test, y_test)
-
-# The score is directly comparable to R-Square
-print(y_score)
-print(f"""
-Our base to compare other models is {y_score.round(3)}.
-
-This base helps us evaluate more complicated models and lets us consider
-tradeoffs between accuracy and interpretability.
-""")
-#Test score based on top 4 var by corr mage, fage, cigs, drink is 0.496
-#Test score with mage, monpre, npvis, fage, cigs, drink is 0.462
-#Test score with mage, fage, meduc, feduc, monpre, npvis, cigs, drink is 0.512
-#Test score for mage, fage, meduc, monpre, npvis, cigs, drink is 0.534
-#Test score with mage, meduc, monpre, npvis, cigs, drink is 0.546
+print(y_score_test) #this model is overfitted, there's a big difference between
+#my train and my test score, it memorized all the data but it didn't perform
+#well. y_score is r squared for both test and train 
+print(y_score_train)#the y score should never be 1, should never memorize the data
+                             
